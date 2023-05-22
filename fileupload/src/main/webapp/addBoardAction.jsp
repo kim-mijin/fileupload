@@ -25,7 +25,7 @@
 	*/
 	
 	//파일 업로드 위치 (server설정에서 Serve modules without publishing 체크 -> 내가 알수있는 upload폴더 디렉토리)
-	String dir = request.getServletContext().getRealPath("\\upload"); //"*\\upload로 써도 가능"
+	String dir = request.getServletContext().getRealPath("/upload"); //"*\\upload로 써도 가능"
 	System.out.println(dir + " <--dir"); //결과: C:\html_work\fileupload\src\main\webapp\\upload
 	
 	int maxFileSize = 10 * 1024 * 1024; // 10Mbyte
