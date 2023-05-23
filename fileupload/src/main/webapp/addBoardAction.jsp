@@ -4,7 +4,18 @@
 <%@ page import="vo.*"%>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.net.*" %>
 <%
+	//1.컨트롤러계층
+	//세션유효성검사: 로그인 안하면 접근불가
+	String msg = null;
+	if(session.getAttribute("loginMember") == null){
+		msg = URLEncoder.encode("잘못된 접근입니다","utf-8");
+		response.sendRedirect(request.getContextPath()+"/boardList.jsp?msg="+msg);
+		return;
+	}
+
+	//request를 MultipartRequest로 맵핑
 	/*
 		MultipartRequest 사용하지 않는 경우
 		
@@ -39,7 +50,7 @@
 					-> DB에 저장할 때는 중복되지 않는 이름을 만들어 저장하고(메소드사용) 다운로드 할 때는 업로드된 이름으로 다운받을 수 있도록 한다
 	*/
 		
-	//1) 업로드 파일이 pdf파일이 아니면 리턴(코드진행종료)
+	//1) 업로드 파일이 pdf파일이 아니면 리다이렉션(코드진행종료)
 	if(mRequest.getContentType("boardFile").equals("application/pdf") == false){
 		/*
 			문제: 파일의 정보가 호출되는 순간 파일이 지정한 위치에 저장됨 -> 저장된 파일을 삭제해야한다
@@ -54,7 +65,8 @@
 			f.delete();
 			System.out.println("파일삭제" + " <--addBoardAction 업로드된 파일삭제");
 		}
-		response.sendRedirect(request.getContextPath()+"/addBoard.jsp");
+		msg = URLEncoder.encode("PDF파일이 아닙니다", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/addBoard.jsp?msg="+msg);
 		return;	
 	}
 	

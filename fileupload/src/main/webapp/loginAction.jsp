@@ -8,12 +8,13 @@
 	System.out.println(request.getParameter("memberId") + " <--loginAction param memberId");
 	System.out.println(request.getParameter("memberPw") + " <--loginAction param memberPw");
 	
-	String errMsg = null;
+	//요청값 유효성검사: 요청값이 null이거나 공백이면 로그인폼으로 리다이렉션, 메시지넘기기
+	String msg = null;
 	if(request.getParameter("memberId") == null || request.getParameter("memberId").equals("")
 			|| request.getParameter("memberPw") == null || request.getParameter("memberPw").equals("")){
 		System.out.println("ID 혹은 PW 미입력 <-- loginAction");
-		errMsg = URLEncoder.encode("ID 혹은 PW를 확인해주세요", "utf-8");
-		response.sendRedirect(request.getContextPath()+"/login.jsp?errMsg="+errMsg);
+		msg = URLEncoder.encode("ID 혹은 PW를 확인해주세요", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/login.jsp?msg="+msg);
 		return;
 	}
 	
@@ -42,8 +43,8 @@
 		response.sendRedirect(request.getContextPath()+"/boardList.jsp");
 		System.out.println("loginAction 로그인성공");
 	} else {
-		errMsg = URLEncoder.encode("ID 혹은 PW를 확인해주세요", "utf-8");
-		response.sendRedirect(request.getContextPath()+"/login.jsp");
+		msg = URLEncoder.encode("ID 혹은 PW를 확인해주세요", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/login.jsp?msg="+msg);
 	}
 	
 	

@@ -1,20 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="vo.*" %>
 <%
+	//boardList: 게시글 누구나 접근 가능
 	//1.컨트롤러계층
-	//session유효성검사: 로그인이 되어있으면 loginMember변수에 저장한다
-	Object o = null;
-	if(session.getAttribute("loginMember") != null){
-		o = session.getAttribute("loginMember");
-	}
-	
-	String loginMember = "";
-	if(o instanceof String){
-		loginMember = (String)o;
-	}
-	System.out.println(loginMember + " <--boardList loginMember");
-	
 	//요청값: currentPage(int)
 	//요청값이 잘 넘어오는지 확인
 	System.out.println(request.getParameter("currentPage") + " <--boardList param currentPage"); 
@@ -109,14 +99,37 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>boardList</title>
+	<title>board list</title>
 	<!-- 부트스트랩5 -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 	
 </head>
 <body>
+	<!----------- 네비게이션 ----------->
+	<nav>
+	<ul>
+		<li><a href="<%=request.getContextPath()%>/boardList.jsp">목록으로</a></li>
+		<li><a href="<%=request.getContextPath()%>/login.jsp">로그인</a></li>
+		<li><a href="<%=request.getContextPath()%>/logoutAction.jsp">로그아웃</a></li>
+	</ul>
+	</nav>
+	
+	<!----------- 메시지 ----------->
+	<%
+		if(request.getParameter("msg") != null){
+	%>
+			<span><%=request.getParameter("msg")%></span>
+	<%
+		}
+	%>
+
+	<!----------------------------------------------- 게시글목록 시작 ---------------------------------------------------------->
 	<h1>PDF 자료 목록</h1>
+	<!-- 게시글 입력버튼 -->
+	<a href="<%=request.getContextPath()%>/addBoard.jsp">글쓰기</a>
+	
+	<!-- 게시글 목록 테이블 -->
 	<table class="table table-bordered">
 		<tr>
 			<th>게시글번호</th>
@@ -209,5 +222,6 @@
 			<a class="page-link" href="<%=request.getContextPath()%>/boardList.jsp?currentPage=<%=lastPage%>">&#62;&#62;</a>
 		</li>
 	</ul>
+	<!----------------------------------------------- 게시글목록 끝 ---------------------------------------------------------->
 </body>
 </html>

@@ -6,6 +6,24 @@
 	<title>login</title>
 </head>
 <body>
+	<!----------- 네비게이션 ----------->
+	<nav>
+	<ul>
+		<li><a href="<%=request.getContextPath()%>/boardList.jsp">목록으로</a></li>
+		<li><a href="<%=request.getContextPath()%>/login.jsp">로그인</a></li>
+	</ul>
+	</nav>
+	
+	<!----------- 에러메시지 ----------->
+	<%
+		if(request.getParameter("msg") != null){
+	%>
+			<span><%=request.getParameter("msg")%></span>
+	<%
+		}
+	%>
+	
+	<!----------- 로그인 ----------->
 	<h1>로그인</h1>
 	<form action="<%=request.getContextPath()%>/loginAction.jsp">
 		<table>

@@ -4,6 +4,7 @@
 <%@ page import="vo.*"%>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.net.*" %>
 <%
 	//ANSI코드
 	final String BG_YELLOW = "\u001B[43m";
@@ -23,9 +24,11 @@
 	System.out.println(mRequest.getParameter("boardFile") + " <--modifyBoardAction param boardFile"); //파일을 선택하지 않으면 null값이 넘어옴
 	
 	//요청값 유효성 검사: boardFile을 제외한 나머지 요청값이 null인 경우에는 boardList로 리다이렉션
+	String msg = null;
 	if(mRequest.getParameter("boardNo") == null || mRequest.getParameter("boardNo") == null
 		|| mRequest.getParameter("boardTitle") == null){
-		response.sendRedirect(request.getContextPath()+"/boardList.jsp");
+		msg = URLEncoder.encode("잘못된 접근입니다", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/boardList.jsp?msg="+msg);
 		return;
 	}
 
@@ -63,7 +66,7 @@
 	
 	//2)파일을 바꾼 경우: 이전 boardFile 삭제, 새로운 boardFile 추가 -> 테이블 수정
 	if(mRequest.getOriginalFileName("boardFile") != null){ //수정할 파일이 있으면 -> pdf파일 유효성 검사 진행
-		//2-1)pdf파일이 아니면 새로 업로드된 파일 삭제
+		//2-1)pdf파일이 아니면 새로 업로드된 파일 삭제하고 수정폼으로 리다이렉션
 		if(mRequest.getContentType("boardFile").equals("application/pdf") == false){
 			System.out.println("PDF파일이 아닙니다" + " <--modifyBoardAction 업로드파일타입 확인");
 			String saveFilename = mRequest.getFilesystemName("boardFile"); //업로드된 파일의 시스템네임을 변수에 저장
@@ -72,7 +75,8 @@
 				f.delete();
 				System.out.println("새로운파일삭제" + " <--modifyBoardAction");
 			}
-			response.sendRedirect(request.getContextPath()+"/boardList.jsp");
+			msg = URLEncoder.encode("PDF파일이 아닙니다", "utf-8");
+			response.sendRedirect(request.getContextPath()+"/modifyBoard.jsp?msg="+msg+"&boardNo="+boardNo+"&boardFileNo="+boardFileNo);
 			return;	
 			
 		} else { //2-2)pdf파일이면 이전파일 삭제(saveFilename)->db수정(update)
@@ -117,9 +121,11 @@
 	//실패하면 modifyBoard로 성공하면 boardList로 리다이렉션
 	if(modTitleRs ==1 || boardFileRs == 1){ //새로운 파일 업로드 성공
 		System.out.println("modifyBoardAction 새로운 파일 업로드 성공");
-		response.sendRedirect(request.getContextPath()+"/boardList.jsp");
+		msg = URLEncoder.encode("파일이 수정되었습니다", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/boardList.jsp?msg="+msg);
 	} else {
 		System.out.println("modifyBoardAction 새로운 파일 업로드 실패");
-		response.sendRedirect(request.getContextPath()+"/modifyBoard.jsp?boardNo="+boardNo+"&boardFileNo="+boardFileNo);
+		msg = URLEncoder.encode("파일 수정에 실패하였습니다", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/modifyBoard.jsp?msg="+msg+"&boardNo="+boardNo+"&boardFileNo="+boardFileNo);
 	}
 %>

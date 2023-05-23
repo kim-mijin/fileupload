@@ -1,9 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="vo.*"%>
 <%@ page import="java.util.*" %>
+<%@ page import="java.net.*" %>
 <%@ page import="java.sql.*" %>
 <%
 	//1.컨트롤러 계층
+	//세션유효성검사: 로그인 상태가 아니면 해당 페이지 접근 불가
+	String msg = null;
+	if(session.getAttribute("loginMember") == null){
+		msg = URLEncoder.encode("로그인 후 이용해주세요", "utf-8");
+		response.sendRedirect(request.getContextPath()+"/boardList.jsp?msg="+msg);
+		return;
+	}
+	
 	//요청값 잘 넘어오는지 확인
 	System.out.println(request.getParameter("boardNo") + " <--modifyBoard param boardNo");
 	System.out.println(request.getParameter("boardFileNo") + " <--modifyBoard param boardFileNo");
@@ -47,12 +56,30 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Modify Board</title>
+	<title>modify board</title>
 	<!-- 부트스트랩5 -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	<!----------- 네비게이션 ----------->
+	<nav>
+	<ul>
+		<li><a href="<%=request.getContextPath()%>/boardList.jsp">목록으로</a></li>
+		<li><a href="<%=request.getContextPath()%>/login.jsp">로그인</a></li>
+	</ul>
+	</nav>
+	
+	<!----------- 오류메시지 ----------->
+	<%
+		if(request.getParameter("msg") != null){
+	%>
+			<span><%=request.getParameter("msg")%></span>
+	<%
+		}
+	%>
+	
+	<!----------- 게시글 수정폼 ----------->
 	<h1>게시글 및 첨부파일 수정</h1>
 	<form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/modifyBoardAction.jsp">
 		<input type="hidden" name="boardNo" value="<%=map.get("boardNo")%>">
